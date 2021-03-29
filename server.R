@@ -7,6 +7,8 @@ library(ggplot2)
 library(rvest)
 library(magrittr)
 library(RColorBrewer)
+library(tidytext)
+library(dplyr)
 
 ### Create text objects
 
@@ -60,6 +62,11 @@ hist(docsDf$freq)
 
 # Get sentiment data
 emo<-get_nrc_sentiment(c(resume, foodWaste, product, success, fishing, lean))
+syu<-get_sentiment(c(resume, foodWaste, product, success, fishing, lean), method = "syuzhet")
+syuSum<-sum(syu)
+bing<-get_sentiments("bing")
+joined<-inner_join(docsDf, bing, "word")
+
 
 server<-function(input, output) {
   output$overallTop10<-renderPlot({
@@ -70,6 +77,12 @@ server<-function(input, output) {
   })
   output$overallEmotions<-renderPlot({
     barplot(sort(colSums(prop.table(emo))), horiz=TRUE, cex.names=0.6, las=1, main="Overall Emotional Sentiment", xlab="Frequency of Occurrence(%)")
+  })
+  output$overallWords<-renderPlot({
+    joined %>% 
+      mutate(freq = ifelse(sentiment=="negative", -freq, freq)) %>%
+      mutate(word = reorder(word, freq)) %>%
+      ggplot(aes(word, freq, fill=sentiment)) + geom_col() + coord_flip() + labs(y="Sentiment Score")
   })
 }
 

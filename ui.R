@@ -18,7 +18,8 @@ ui<-dashboardPage(
                 box(plotOutput("overallCloud", height=300))
               ),
               fluidRow(
-                box(plotOutput("overallEmotions", height=300)) 
+                box(plotOutput("overallEmotions", height=300)),
+                box(plotOutput("overallWords", height=300))
               )
       )
     )

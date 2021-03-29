@@ -7,8 +7,12 @@ library(ggplot2)
 library(rvest)
 library(magrittr)
 
+### Create text objects
+
+#Resume
 resume<-readLines("resume.txt")
 
+#LinkedIn Articles
 foodWasteURL<-read_html("https://www.linkedin.com/pulse/what-would-happen-we-stopped-wasting-food-mark-syphus/")
 foodWaste<-foodWasteURL %>% html_nodes("p") %>% html_text()
 foodWaste<-foodWaste[-c(16:22)]
@@ -29,3 +33,17 @@ leanURL<-read_html("https://www.linkedin.com/pulse/how-you-killing-your-lean-pro
 lean<-leanURL %>% html_nodes("p") %>% html_text()
 lean<-lean[-c(9:15)]
 
+# Create Corpus for all files
+docs<-VCorpus(VectorSource(c(resume, foodWaste, product, success, fishing, lean)))
+
+# Clean up text: remove special characters, convert case, remove numbers, remove stopwords, etc.
+specialCharacters<-content_transformer(
+	function(x, pattern)
+		gsub(pattern, " ", x)
+	)
+docs<-tm_map(docs, specialCharacters, c("-", "%", "&"))
+docs<-tm_map(docs, removeNumbers)
+docs<-tm_map(docs, removePunctuation)
+docs<-tm_map(docs, content_transformer(tolower))
+docs<-tm_map(docs, removeWords, stopwords("english"))
+docs<-tm_map(docs, stripWhitespace)

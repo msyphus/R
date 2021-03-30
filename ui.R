@@ -14,12 +14,12 @@ ui<-dashboardPage(
     tabItems(
       tabItem(tabName="overall",
               fluidRow(
-                box(plotOutput("overallTop10", height=300)),
-                box(plotOutput("overallCloud", height=300))
+                box(plotOutput("overallTop10")),
+                box(plotOutput("overallCloud"))
               ),
               fluidRow(
-                box(plotOutput("overallEmotions", height=300)),
-                box(plotOutput("overallWords", height=300))
+                box(plotOutput("overallEmotions")),
+                box(plotOutput("overallWords"))
               )
       )
     )

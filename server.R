@@ -49,6 +49,7 @@ docs<-tm_map(docs, removeNumbers)
 docs<-tm_map(docs, removePunctuation)
 docs<-tm_map(docs, content_transformer(tolower))
 docs<-tm_map(docs, removeWords, stopwords("english"))
+docs<-tm_map(docs, removeWords, c("etc", "also", "even", "just", "one"))
 docs<-tm_map(docs, stripWhitespace)
 
 # Create document matrix and data frame
@@ -73,7 +74,7 @@ server<-function(input, output) {
     barplot(docsDf[1:10,]$freq, las=2, names.arg=docsDf[1:10,]$word, col="blue", main="Top 10 Most Occurring Words", ylab="Word Occurrences")
   })
   output$overallCloud<-renderPlot({
-    wordcloud(words=docsDf$word, freq=docsDf$freq, min.freq=5, max.words=100, random.order=FALSE, rot.per=0.3, colors=brewer.pal(5, "Dark2"))
+    wordcloud(words=docsDf$word, freq=docsDf$freq, min.freq=10, scale=c(3.5,0.25), max.words=100, random.order=FALSE, rot.per=0.35, colors=brewer.pal(5, "Dark2"))
   })
   output$overallEmotions<-renderPlot({
     barplot(sort(colSums(prop.table(emo))), horiz=TRUE, cex.names=0.6, las=1, main="Overall Emotional Sentiment", xlab="Frequency of Occurrence(%)")

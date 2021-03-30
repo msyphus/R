@@ -38,6 +38,7 @@ lean <- lean[-c(9:15)]
 
 # Create Corpus for all files
 docs <- VCorpus(VectorSource(c(resume, foodWaste, product, success, fishing, lean)))
+res <- VCorpus(VectorSource(resume))
 
 # Clean up text: remove special characters, convert case, remove numbers, remove stopwords, etc.
 specialCharacters<-content_transformer(
@@ -52,11 +53,24 @@ docs <- tm_map(docs, removeWords, stopwords("english"))
 docs <- tm_map(docs, removeWords, c("etc", "also", "even", "just", "one"))
 docs <- tm_map(docs, stripWhitespace)
 
+res <- tm_map(res, specialCharacters, c("-", "%", "&"))
+res <- tm_map(res, removeNumbers)
+res <- tm_map(res, removePunctuation)
+res <- tm_map(res, content_transformer(tolower))
+res <- tm_map(res, removeWords, stopwords("english"))
+res <- tm_map(res, removeWords, c("etc", "also", "even", "just", "one"))
+res <- tm_map(res, stripWhitespace)
+
 # Create document matrix and data frame
 termDocs <- TermDocumentMatrix(docs)
 docsMat <- as.matrix(termDocs)
 docsMat <- sort(rowSums(docsMat), decreasing = TRUE)
 docsDf <- data.frame(word = names(docsMat), freq = docsMat)
+
+termRes <- TermDocumentMatrix(res)
+resMat <- as.matrix(termRes)
+resMat <- sort(rowSums(resMat), decreasing = TRUE)
+resDf <- data.frame(word = names(resMat), freq = resMat)
 
 # Explore results
 hist(docsDf$freq)
@@ -68,6 +82,10 @@ syuSum <- round(sum(syu), 0)
 bing <- get_sentiments("bing")
 joined <- inner_join(docsDf, bing, "word")
 
+emoRes <- get_nrc_sentiment(resume)
+syuRes <- get_sentiment(resume, method = "syuzhet")
+syuSumRes <- round(sum(syuRes))
+joinedRes <- inner_join(resDf, bing, "word")
 
 server <- function(input, output) {
   output$overallTop10 <- renderPlot({
@@ -88,6 +106,24 @@ server <- function(input, output) {
   })
   output$overallSentiment<-renderValueBox({
       valueBox(syuSum, "Accumulative Sentiment Score", icon = icon("thumbs-up", lib = "glyphicon"), col = "green")
+  })
+  output$resumeTop10 <- renderPlot({
+    barplot(resDf[1:10,]$freq, las = 2, names.arg = resDf[1:10,]$word, col = "#7570b3", cex.names = 0.7, main = "Top 10 Most Occurring Words", ylab = "Word Occurrences", ylim = c(0, 13))
+  })
+  output$resumeCloud <- renderPlot({
+    wordcloud(words = resDf$word, freq = resDf$freq, min.freq = 3, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
+  })
+  output$resumeEmotions <- renderPlot({
+    barplot(sort(colSums(prop.table(emoRes))), horiz = TRUE, col = "#7570b3", cex.names = 0.7, las = 1, main = "Overall Emotional Sentiment", xlab = "Frequency of Occurrence(%)")
+  })
+  output$resumeWords <- renderPlot({
+    joinedRes %>% 
+      mutate(freq = ifelse(sentiment == "negative", -freq, freq)) %>%
+      mutate(word = reorder(word, freq)) %>%
+      ggplot(aes(word, freq, fill = sentiment)) + geom_col() + scale_fill_manual(values = c("#dd4b39", "#00a65a")) + coord_flip() + labs(y = "Sentiment Score")
+  })
+  output$resumeSentiment<-renderValueBox({
+    valueBox(syuSumRes, "Accumulative Sentiment Score", icon = icon("thumbs-up", lib = "glyphicon"), col = "green")
   })
 }
 

@@ -25,6 +25,20 @@ ui <- dashboardPage(
                 box(plotOutput("overallWords"), width = 6),
                 valueBoxOutput("overallSentiment", width = 2)
               )
+      ),
+      tabItem(tabName = "resume",
+              fluidRow(
+                box(plotOutput("resumeTop10")),
+                box(plotOutput("resumeCloud"))
+              ),
+              fluidRow(
+                box(plotOutput("resumeEmotions"), width = 4),
+                box(plotOutput("resumeWords"), width = 6),
+                valueBoxOutput("resumeSentiment", width = 2)
+              )        
+      ),
+      tabItem(tabName = "articles", 
+              h2("Coming soon")        
       )
     )
   )

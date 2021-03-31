@@ -38,7 +38,15 @@ ui <- dashboardPage(
               )        
       ),
       tabItem(tabName = "articles", 
-              h2("Coming soon")        
+              fluidRow(
+                box(plotOutput("articlesTop10")),
+                box(plotOutput("articlesCloud"))
+              ),
+              fluidRow(
+                box(plotOutput("articlesEmotions"), width = 4),
+                box(plotOutput("articlesWords"), width = 6),
+                valueBoxOutput("articlesSentiment", width = 2)
+              )             
       )
     )
   )

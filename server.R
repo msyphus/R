@@ -122,6 +122,7 @@ server <- function(input, output) {
     barplot(docsDf[1:10,]$freq, las = 2, names.arg = docsDf[1:10,]$word, col = "#7570b3", main = "Top 10 Most Occurring Words", ylab = "Word Occurrences", ylim = c(0, 30))
   })
   output$overallCloud <- renderPlot({
+    par(mar = c(0,0,0,0))
     wordcloud(words = docsDf$word, freq = docsDf$freq, min.freq = 3, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
   })
   output$overallEmotions <- renderPlot({
@@ -144,6 +145,7 @@ server <- function(input, output) {
     text(x = seq(0.5, 12, 1.2), y = -1.5, labels = resDf[1:10,]$word, srt = 45, xpd = TRUE)
   })
   output$resumeCloud <- renderPlot({
+    par(mar = c(0,0,0,0))
     wordcloud(words = resDf$word, freq = resDf$freq, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
   })
   output$resumeEmotions <- renderPlot({
@@ -164,6 +166,7 @@ server <- function(input, output) {
     barplot(artsDf[1:10,]$freq, las = 2, names.arg = artsDf[1:10,]$word, col = "#7570b3", main = "Top 10 Most Occurring Words", ylab = "Word Occurrences", ylim = c(0, 30))
   })
   output$articlesCloud <- renderPlot({
+    par(mar = c(0,0,0,0))
     wordcloud(words = artsDf$word, freq = artsDf$freq, min.freq = 3, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
   })
   output$articlesEmotions <- renderPlot({

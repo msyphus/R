@@ -9,7 +9,6 @@ library(magrittr)
 library(RColorBrewer)
 library(tidytext)
 library(dplyr)
-library(stringr)
 
 ### Create text objects
 
@@ -127,8 +126,9 @@ server <- function(input, output) {
   })
   output$overallEmotions <- renderPlot({
     emoLabs <- sort(colSums(prop.table(emo)))
+    par(mar = c(4,6,4,4))
     barplot(emoLabs, horiz = TRUE, col = "#7570b3", main = "Overall Emotional Sentiment", xlab = "Frequency of Occurrence(%)", xlim = c(0, 0.30), yaxt = "n")
-    text(x = -0.02, y = seq(1, 13, 1.25), labels = names(emoLabs), srt = -45, xpd = TRUE)
+    text(x = -0.03, y = seq(1, 13, 1.25), labels = names(emoLabs), srt = -45, xpd = TRUE)
   })
   output$overallWords <- renderPlot({
     joined %>% 
@@ -150,8 +150,9 @@ server <- function(input, output) {
   })
   output$resumeEmotions <- renderPlot({
     emoResLabs <- sort(colSums(prop.table(emoRes)))
+    par(mar = c(4,6,4,4))
     barplot(emoResLabs, horiz = TRUE, col = "#7570b3", main = "Overall Emotional Sentiment", xlab = "Frequency of Occurrence(%)", xlim = c(0, 0.40), yaxt = "n")
-    text(x = -0.02, y = seq(1, 13, 1.25), labels = names(emoResLabs), srt = -45, xpd = TRUE)
+    text(x = -0.03, y = seq(1, 13, 1.25), labels = names(emoResLabs), srt = -45, xpd = TRUE)
   })
   output$resumeWords <- renderPlot({
     joinedRes %>% 
@@ -171,8 +172,9 @@ server <- function(input, output) {
   })
   output$articlesEmotions <- renderPlot({
     emoArtsLabs <- sort(colSums(prop.table(emoArts)))
+    par(mar = c(4,6,4,4))
     barplot(emoArtsLabs, horiz = TRUE, col = "#7570b3", main = "Overall Emotional Sentiment", xlab = "Frequency of Occurrence(%)", xlim = c(0, 0.30), yaxt = "n")
-    text(x = -0.02, y = seq(1, 13, 1.25), labels = names(emoArtsLabs), srt = -45, xpd = TRUE)
+    text(x = -0.03, y = seq(1, 13, 1.25), labels = names(emoArtsLabs), srt = -45, xpd = TRUE)
   })
   output$articlesWords <- renderPlot({
     joinedArts %>% 

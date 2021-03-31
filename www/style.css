@@ -1,7 +1,3 @@
-#overallCloud img {
-    height: 100%;
-}
-
-/* #overallSentiment, #resumeSentiment {
+.col-sm-2 {
     margin-top: 7%;
-} */
+}

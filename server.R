@@ -9,6 +9,7 @@ library(magrittr)
 library(RColorBrewer)
 library(tidytext)
 library(dplyr)
+library(stringr)
 
 ### Create text objects
 
@@ -46,28 +47,37 @@ specialCharacters<-content_transformer(
   function(x, pattern)
     gsub(pattern, " ", x)
 )
-docs <- tm_map(docs, specialCharacters, c("-", "%", "&"))
+docs <- tm_map(docs, specialCharacters, "-")
+docs <- tm_map(docs, specialCharacters, "%")
+docs <- tm_map(docs, specialCharacters, "&")
+docs <- tm_map(docs, specialCharacters, "'")
 docs <- tm_map(docs, removeNumbers)
 docs <- tm_map(docs, removePunctuation)
 docs <- tm_map(docs, content_transformer(tolower))
 docs <- tm_map(docs, removeWords, stopwords("english"))
-docs <- tm_map(docs, removeWords, c("etc", "also", "even", "just", "one"))
+docs <- tm_map(docs, removeWords, c("etc", "also", "even", "just", "one", "re", "ve"))
 docs <- tm_map(docs, stripWhitespace)
 
-res <- tm_map(res, specialCharacters, c("-", "%", "&"))
+res <- tm_map(res, specialCharacters, "-")
+res <- tm_map(res, specialCharacters, "%")
+res <- tm_map(res, specialCharacters, "&")
+res <- tm_map(res, specialCharacters, "'")
 res <- tm_map(res, removeNumbers)
 res <- tm_map(res, removePunctuation)
 res <- tm_map(res, content_transformer(tolower))
 res <- tm_map(res, removeWords, stopwords("english"))
-res <- tm_map(res, removeWords, c("etc", "also", "even", "just", "one"))
+res <- tm_map(res, removeWords, c("etc", "also", "even", "just", "one", "re", "ve"))
 res <- tm_map(res, stripWhitespace)
 
-arts <- tm_map(arts, specialCharacters, c("-", "%", "&"))
+arts <- tm_map(arts, specialCharacters, "-")
+arts <- tm_map(arts, specialCharacters, "%")
+arts <- tm_map(arts, specialCharacters, "&")
+arts <- tm_map(arts, specialCharacters, "'")
 arts <- tm_map(arts, removeNumbers)
 arts <- tm_map(arts, removePunctuation)
 arts <- tm_map(arts, content_transformer(tolower))
 arts <- tm_map(arts, removeWords, stopwords("english"))
-arts <- tm_map(arts, removeWords, c("etc", "also", "even", "just", "one"))
+arts <- tm_map(arts, removeWords, c("etc", "also", "even", "just", "one", "re", "ve"))
 arts <- tm_map(arts, stripWhitespace)
 
 
@@ -112,7 +122,7 @@ server <- function(input, output) {
     barplot(docsDf[1:10,]$freq, las = 2, names.arg = docsDf[1:10,]$word, col = "#7570b3", main = "Top 10 Most Occurring Words", ylab = "Word Occurrences", ylim = c(0, 30))
   })
   output$overallCloud <- renderPlot({
-    wordcloud(words = docsDf$word, freq = docsDf$freq, min.freq = 10, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
+    wordcloud(words = docsDf$word, freq = docsDf$freq, min.freq = 3, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
   })
   output$overallEmotions <- renderPlot({
     emoLabs <- sort(colSums(prop.table(emo)))
@@ -134,7 +144,7 @@ server <- function(input, output) {
     text(x = seq(0.5, 12, 1.2), y = -1.5, labels = resDf[1:10,]$word, srt = 45, xpd = TRUE)
   })
   output$resumeCloud <- renderPlot({
-    wordcloud(words = resDf$word, freq = resDf$freq, min.freq = 3, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
+    wordcloud(words = resDf$word, freq = resDf$freq, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
   })
   output$resumeEmotions <- renderPlot({
     emoResLabs <- sort(colSums(prop.table(emoRes)))

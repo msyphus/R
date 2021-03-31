@@ -6,8 +6,9 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Overall Sentiment", tabName = "overall", icon = icon("dashboard")),
-      menuItem("Resume", tabName = "resume", icon = icon("th")),
-      menuItem("Articles", tabName = "articles", icon = icon("th"))
+      menuItem("Resume", tabName = "resume", icon = icon("file-alt")),
+      menuItem("Articles", tabName = "articles", icon = icon("file-alt")),
+      menuItem("View Readme File", icon = icon("file-code-o"), href = "https://github.com/msyphus/text-analysis")
     )
   ),
   dashboardBody(

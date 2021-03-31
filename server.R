@@ -117,7 +117,7 @@ server <- function(input, output) {
   output$overallEmotions <- renderPlot({
     emoLabs <- sort(colSums(prop.table(emo)))
     barplot(emoLabs, horiz = TRUE, col = "#7570b3", main = "Overall Emotional Sentiment", xlab = "Frequency of Occurrence(%)", xlim = c(0, 0.30), yaxt = "n")
-    text(x = -0.02, y = seq(1, 13, 1.25), labels = names(emoLabs), srt=-45, xpd = TRUE)
+    text(x = -0.02, y = seq(1, 13, 1.25), labels = names(emoLabs), srt = -45, xpd = TRUE)
   })
   output$overallWords <- renderPlot({
     joined %>% 
@@ -130,7 +130,8 @@ server <- function(input, output) {
       valueBox(syuSum, "Accumulative Sentiment Score", icon = icon("thumbs-up", lib = "glyphicon"), col = "green")
   })
   output$resumeTop10 <- renderPlot({
-    barplot(resDf[1:10,]$freq, las = 2, names.arg = resDf[1:10,]$word, col = "#7570b3", cex.names = 0.7, main = "Top 10 Most Occurring Words", ylab = "Word Occurrences", ylim = c(0, 13))
+    barplot(resDf[1:10,]$freq, las = 2, xaxt = "n", col = "#7570b3", main = "Top 10 Most Occurring Words", ylab = "Word Occurrences", ylim = c(0, 13))
+    text(x = seq(0.5, 12, 1.2), y = -1.5, labels = resDf[1:10,]$word, srt = 45, xpd = TRUE)
   })
   output$resumeCloud <- renderPlot({
     wordcloud(words = resDf$word, freq = resDf$freq, min.freq = 3, scale = c(3.5,0.25), max.words = 100, random.order = FALSE, rot.per = 0.35, colors = brewer.pal(5, "Dark2"))
@@ -138,7 +139,7 @@ server <- function(input, output) {
   output$resumeEmotions <- renderPlot({
     emoResLabs <- sort(colSums(prop.table(emoRes)))
     barplot(emoResLabs, horiz = TRUE, col = "#7570b3", main = "Overall Emotional Sentiment", xlab = "Frequency of Occurrence(%)", xlim = c(0, 0.40), yaxt = "n")
-    text(x = -0.02, y = seq(1, 13, 1.25), labels = names(emoResLabs), srt=-45, xpd = TRUE)
+    text(x = -0.02, y = seq(1, 13, 1.25), labels = names(emoResLabs), srt = -45, xpd = TRUE)
   })
   output$resumeWords <- renderPlot({
     joinedRes %>% 
